@@ -1,0 +1,11 @@
+.DS_Store
+glad.c
+main
+.vscode/launch.json
+.vscode/tasks.json
+Deps/Include/glad/glad.h
+Deps/Include/GLFW/glfw3.h
+Deps/Include/GLFW/glfw3native.h
+Deps/Include/KHR/khrplatform.h
+Deps/Libs/libglfw3.a
+main.dSYM/Contents/Info.plist
