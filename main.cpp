@@ -94,15 +94,47 @@ int main(void)
     glCompileShader(fragmentShader); //tell it to use that one
 
     //CHECK FOR ERROR IN SHADERS----------------------
-    success = NULL;
+    int success0;
     char infoLog2[512];
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success0);
 
     if(!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog2); std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
     //fragmentshader end
+
+    //Linkin both shaders into an shader program
+    unsigned int shaderProgram;
+    shaderProgram = glCreateProgram();
+
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    int success1;
+    char infoLog3[512];
+    glGetProgramiv(shaderProgram, GL_COMPILE_STATUS, &success1);
+
+    if(!success)
+    {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog3); std::cout << "ERROR::SHADER::PROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    glUseProgram(shaderProgram); //Actually using it
+    //Shader program end
+
+    glDeleteShader(vertexShader); // we delete the shaders since now that they linked theyr not needed
+    glDeleteShader(fragmentShader);
+
+
+    //tell opengl how to interpret vertex data
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    //VAO gets all the atributes for an object bunched up for ease of use?
+
+    //VAO end
 
     // triangle end
     while(!glfwWindowShouldClose(window)) //Render LOOP
@@ -136,3 +168,16 @@ void processInput(GLFWwindow* window){
         glfwSetWindowShouldClose(window, true);
     }
 }
+
+/* Interesting resource from the book
+/ 0. copy our vertices array in a buffer for OpenGL to use
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // 1. then set the vertex attributes pointers
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+                              (void*)0);
+        glEnableVertexAttribArray(0);
+// 2. use our shader program when we want to render an object
+        glUseProgram(shaderProgram);
+// 3. now draw the object
+        someOpenGLFunctionThatDrawsOurTriangle();
+*/
